@@ -1,8 +1,8 @@
-location,latitude,ratio
-Peru,0,25538.85
-Good Hope,37.0093,25666.65
-Pennsylvania,43.5556,25599.6
-Italy,47.7963,25640.55
-France,51.3327,25658.28
-Austria,53.0926,25683.3
-Lapland,73.7037,25832.25
+location,latitude,ratio,weights
+Peru,0,25538.85,0.5
+Good Hope,37.0093,25666.65,0.5
+Pennsylvania,43.5556,25599.6,1
+Italy,47.7963,25640.55,1
+France,51.3327,25658.28,1
+Austria,53.0926,25683.3,1
+Lapland,73.7037,25832.25,0.25
