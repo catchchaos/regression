@@ -51,14 +51,18 @@ def labels_3d(ax):
 	ax.set_xticks([]), ax.set_yticks([]), ax.set_zticks([])
 	ax.grid(False)
 
-def save_animation(ax):
-	os.mkdir('projection_views')
-	for i, angle in enumerate(range(0, 360, 3)):
+def save_animation(ax, file, step=3, temp='/tmp/animation'):
+	if os.path.isdir(temp):
+		for img in os.listdir(temp): os.remove(temp)
+	else:
+		os.mkdir(temp)
+	for i, angle in enumerate(range(0, 360, step)):
 		# Consider changing elavation too
 		ax.view_init(elev=10, azim=angle)
-		plt.savefig(f'projection_views/{i:03d}.png', dpi=150)
+		plt.savefig(os.path.join(temp, f'{i:03d}.png'), dpi=150)
 
-	sp.check_output(['ffmpeg', '-y', '-i', 'projection_views/%03d.png', '-vf', 'palettegen', '-y', 'projection_views/palette.png'])
-	sp.check_output(['ffmpeg', '-y', '-i', 'projection_views/%03d.png', '-i', 'projection_views/palette.png', '-lavfi', 'paletteuse', 'projection_views/out.gif'])
-	sp.check_output(['convert', 'projection_views/out.gif', '-trim', '-layers', 'trim-bounds', 'images/projection.gif'])
-	shutil.rmtree('projection_views')
+	palette = os.path.join(temp, 'palette.png')
+	sp.check_output(['ffmpeg', '-y', '-i', os.path.join(temp, '%03d.png'), '-vf', 'palettegen', '-y', palette])
+	sp.check_output(['ffmpeg', '-y', '-i', os.path.join(temp, '%03d.png'), '-i', palette, '-lavfi', 'paletteuse', file])
+	sp.check_output(['mogrify', '-trim', '-layers', 'trim-bounds', file])
+	shutil.rmtree(temp)
